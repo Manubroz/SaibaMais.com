@@ -3,50 +3,43 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SaibaMais.com.br</title>
+    <title>SaibaMais</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <header>
-        <h1>SaibaMais.com.br</h1>
-        <p>Conhecimento ao seu alcance</p>
+        <h1>SaibaMais</h1>
+        <p>Conhecimento restrito ao alcance de poucos</p>
         
         <div class="search-container">
-            <input type="text" id="searchInput" placeholder="Pesquise um tópico... (ex: alta cupula)">
-            <button onclick="searchTopics()">🔎 Buscar</button>
+            <input type="text" id="searchInput" placeholder="Pesquise um tópico secreto... (ex: alta cupula)">
+            <button onclick="searchTopics()">🔍 Buscar</button>
         </div>
     </header>
-
-    <nav>
-        <a href="#">Início</a>
-        <a href="#">Artigos</a>
-        <a href="#">Cursos</a>
-        <a href="#">Contato</a>
-    </nav>
 
     <main>
         <section class="destaque">
             <h2>Bem-vindo ao SaibaMais</h2>
-            <p>Aqui você encontra conteúdos educativos, tecnologia e curiosidades.</p>
+            <p>Os conteúdos mais comuns são apenas camuflagem.</p>
         </section>
 
-        <!-- Cards visíveis (camuflagem) -->
+        <!-- Cards de camuflagem -->
         <section class="cards" id="visibleCards">
             <div class="card">
                 <h3>Educação</h3>
-                <p>Materiais para concursos, vestibulares e ENEM.</p>
+                <p>Materiais para concursos e vestibulares.</p>
             </div>
             <div class="card">
                 <h3>Tecnologia</h3>
-                <p>Aprenda HTML, CSS, JavaScript e outras linguagens.</p>
+                <p>Programação, desenvolvimento e inovação.</p>
             </div>
             <div class="card">
                 <h3>Curiosidades</h3>
-                <p>Descubra fatos interessantes sobre ciência e cultura.</p>
+                <p>Fatos interessantes do mundo.</p>
             </div>
         </section>
 
-        <!-- Área onde os resultados da busca aparecerão -->
+        <!-- Resultados da busca -->
         <section class="cards" id="searchResults" style="display: none;"></section>
     </main>
 
@@ -54,18 +47,19 @@
     <div id="passwordModal" class="modal">
         <div class="modal-content">
             <h3 id="modalTitle">Acesso Restrito</h3>
-            <p id="modalTopic" style="margin: 10px 0; font-weight: bold;"></p>
+            <p id="modalTopic"></p>
             
             <input type="password" id="passwordInput" placeholder="Digite a senha">
-            <button onclick="checkPassword()">Entrar</button>
-            <button onclick="closeModal()" style="background:#ccc; margin-left:10px;">Cancelar</button>
-            
-            <p id="errorMsg" style="color:red; margin-top:15px;"></p>
+            <div class="modal-buttons">
+                <button onclick="checkPassword()">Entrar</button>
+                <button onclick="closeModal()">Cancelar</button>
+            </div>
+            <p id="errorMsg"></p>
         </div>
     </div>
 
     <footer>
-        <p>© 2026 SaibaMais.com.br - Todos os direitos reservados.</p>
+        <p>© 2026 SaibaMais - Acesso Controlado</p>
     </footer>
 
     <script src="script.js"></script>
