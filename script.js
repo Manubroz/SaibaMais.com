@@ -1,11 +1,14 @@
+// ==================== CONFIGURAÇÕES GLOBAIS ====================
+const MASTER_PASSWORD = "mestre2026";   // ← MUDE ESTA SENHA PARA ALGO QUE SÓ VOCÊ SAIBA!
+
 const secretTopics = {
     "alta cupula": {
         title: "Alta Cúpula",
-        password: "senha123",           // Mude isso!!
+        password: "senha123",
         content: `
             <h2>Alta Cúpula</h2>
-            <p>Conteúdo sobre a alta cúpula aqui...</p>
-            <p>Adicione suas informações secretas.</p>
+            <p>Conteúdo secreto sobre a alta cúpula aqui...</p>
+            <p>Adicione suas informações restritas.</p>
         `
     },
     "planos": {
@@ -13,72 +16,51 @@ const secretTopics = {
         password: "planos2026",
         content: `
             <h2>Calendário de Planos</h2>
-            <p>Informações sobre os planos...</p>
+            <p>Informações sobre os planos da elite...</p>
+        `
+    },
+    "elite": {
+        title: "A Elite Global",
+        password: "elite2026",
+        content: `
+            <h2>A Elite Global</h2>
+            <p>Informações sobre as famílias e organizações que controlam o mundo.</p>
+        `
+    },
+    "agenda2030": {
+        title: "Agenda 2030",
+        password: "agenda2030",
+        content: `
+            <h2>Agenda 2030 - O Grande Plano</h2>
+            <p>Detalhes sobre os objetivos e metas ocultas...</p>
+        `
+    },
+    "illuminati": {
+        title: "Illuminati",
+        password: "ilum2025",
+        content: `
+            <h2>Illuminati - Símbolos e Influência</h2>
+            <p>A história real por trás do grupo...</p>
+        `
+    },
+    "calendario": {
+        title: "Calendário de Eventos",
+        password: "calendario27",
+        content: `
+            <h2>Calendário de Eventos 2026-2030</h2>
+            <ul>
+                <li>2026 - Evento A</li>
+                <li>2027 - Evento B</li>
+            </ul>
         `
     }
-    // Adicione mais aqui// Cole esses dentro do objeto secretTopics no script.js
-
-"elite": {
-    title: "A Elite Global",
-    password: "elite2026",
-    content: `
-        <h2>A Elite Global</h2>
-        <p>Informações sobre as famílias e organizações que controlam...</p>
-    `
-},
-
-"agenda2030": {
-    title: "Agenda 2030",
-    password: "agenda2030",
-    content: `
-        <h2>Agenda 2030 - O Grande Plano</h2>
-        <p>Detalhes sobre os objetivos e metas ocultas...</p>
-    `
-},
-
-"illuminati": {
-    title: "Illuminati",
-    password: "ilum2025",
-    content: `
-        <h2>Illuminati - Símbolos e Influência</h2>
-        <p>A história real por trás do grupo...</p>
-    `
-},
-
-"calendario": {
-    title: "Calendário de Planos",
-    password: "calendario27",
-    content: `
-        <h2>Calendário de Eventos 2026-2030</h2>
-        <ul>
-            <li>2026 - Evento A</li>
-            <li>2027 - Evento B</li>
-        </ul>
-    `
-},
-
-"controle": {
-    title: "Controle Populacional",
-    password: "controle2026",
-    content: `
-        <h2>Estratégias de Controle Populacional</h2>
-        <p>Informações restritas...</p>
-    `
-},
-
-"financas": {
-    title: "Sistema Financeiro Global",
-    password: "banco2025",
-    content: `
-        <h2>Quem realmente controla o dinheiro mundial</h2>
-        <p>Bancos centrais, famílias e poder...</p>
-    `
-}
 };
 
+// ==================== VARIÁVEIS GLOBAIS ====================
+let unlockedTopics = JSON.parse(localStorage.getItem('unlockedTopics')) || {};
 let currentTopicKey = null;
-let attempts = {};
 
+// ==================== BUSCA ====================
 function searchTopics() {
     const query = document.getElementById('searchInput').value.toLowerCase().trim();
     const resultsContainer = document.getElementById('searchResults');
@@ -100,10 +82,12 @@ function searchTopics() {
         if (key.includes(query)) {
             found = true;
             const topic = secretTopics[key];
+            const isUnlocked = unlockedTopics[key];
+
             resultsContainer.innerHTML += `
                 <div class="card" onclick="openPasswordModal('${key}')">
                     <h3>${topic.title}</h3>
-                    <p>Clique para acessar conteúdo restrito</p>
+                    <p>${isUnlocked ? '✅ Desbloqueado' : '🔒 Clique para acessar conteúdo restrito'}</p>
                 </div>
             `;
         }
@@ -114,49 +98,90 @@ function searchTopics() {
     }
 }
 
+// ==================== MODAL ====================
 function openPasswordModal(key) {
     currentTopicKey = key;
     const topic = secretTopics[key];
-    
+
     document.getElementById('modalTitle').textContent = topic.title;
     document.getElementById('modalTopic').textContent = `Tópico: ${topic.title}`;
     document.getElementById('passwordInput').value = '';
     document.getElementById('errorMsg').textContent = '';
-    
+
     document.getElementById('passwordModal').style.display = 'flex';
     document.getElementById('passwordInput').focus();
 }
 
 function checkPassword() {
-    const password = document.getElementById('passwordInput').value;
+    const password = document.getElementById('passwordInput').value.trim();
     const topic = secretTopics[currentTopicKey];
     const errorMsg = document.getElementById('errorMsg');
 
-    if (password === topic.password) {
+    // Chave Mestre
+    if (password === MASTER_PASSWORD) {
+        unlockAllTopics();
         closeModal();
-        const newWin = window.open('', '_blank');
-        newWin.document.write(`
-            <!DOCTYPE html>
-            <html><head><meta charset="UTF-8"><title>${topic.title}</title>
-            <style>body{font-family:Arial;padding:40px;line-height:1.6;background:#f4f4f9;}</style>
-            </head><body>${topic.content}</body></html>
-        `);
+        alert("🔑 CHAVE MESTRE ATIVADA!\nTodos os tópicos foram desbloqueados.");
+        searchTopics(); // Atualiza os cards
+        return;
+    }
+
+    // Senha normal
+    if (password === topic.password) {
+        unlockTopic(currentTopicKey);
+        closeModal();
+        showContent(currentTopicKey);
     } else {
+        let attempts = JSON.parse(localStorage.getItem('attempts')) || {};
         attempts[currentTopicKey] = (attempts[currentTopicKey] || 0) + 1;
+
         if (attempts[currentTopicKey] >= 3) {
-            errorMsg.textContent = "Muitas tentativas incorretas. Tente mais tarde.";
+            errorMsg.textContent = "Muitas tentativas. Tente novamente mais tarde.";
             setTimeout(closeModal, 2500);
         } else {
-            errorMsg.textContent = `Senha errada (${attempts[currentTopicKey]}/3)`;
+            errorMsg.textContent = `Senha incorreta (${attempts[currentTopicKey]}/3)`;
         }
+        localStorage.setItem('attempts', JSON.stringify(attempts));
     }
+}
+
+// ==================== DESBLOQUEIO ====================
+function unlockTopic(key) {
+    unlockedTopics[key] = true;
+    localStorage.setItem('unlockedTopics', JSON.stringify(unlockedTopics));
+}
+
+function unlockAllTopics() {
+    Object.keys(secretTopics).forEach(key => unlockedTopics[key] = true);
+    localStorage.setItem('unlockedTopics', JSON.stringify(unlockedTopics));
+}
+
+// ==================== MOSTRAR CONTEÚDO ====================
+function showContent(key) {
+    const topic = secretTopics[key];
+    const newWin = window.open('', '_blank');
+    newWin.document.write(`
+        <!DOCTYPE html>
+        <html lang="pt-BR">
+        <head><meta charset="UTF-8"><title>${topic.title}</title>
+        <style>
+            body {font-family: Arial, sans-serif; padding: 40px; background: #1a1a2e; color: #e0e0ff; line-height: 1.7;}
+            h2 {color: #00d4ff;}
+        </style>
+        </head>
+        <body>${topic.content}</body></html>
+    `);
 }
 
 function closeModal() {
     document.getElementById('passwordModal').style.display = 'none';
 }
 
-// Fechar modal com ESC
+// ==================== EVENTOS ====================
 document.addEventListener('keydown', e => {
     if (e.key === "Escape") closeModal();
+});
+
+document.getElementById('passwordInput').addEventListener('keypress', e => {
+    if (e.key === "Enter") checkPassword();
 });
