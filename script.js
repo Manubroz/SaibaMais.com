@@ -16,7 +16,64 @@ const secretTopics = {
             <p>Informações sobre os planos...</p>
         `
     }
-    // Adicione mais aqui
+    // Adicione mais aqui// Cole esses dentro do objeto secretTopics no script.js
+
+"elite": {
+    title: "A Elite Global",
+    password: "elite2026",
+    content: `
+        <h2>A Elite Global</h2>
+        <p>Informações sobre as famílias e organizações que controlam...</p>
+    `
+},
+
+"agenda2030": {
+    title: "Agenda 2030",
+    password: "agenda2030",
+    content: `
+        <h2>Agenda 2030 - O Grande Plano</h2>
+        <p>Detalhes sobre os objetivos e metas ocultas...</p>
+    `
+},
+
+"illuminati": {
+    title: "Illuminati",
+    password: "ilum2025",
+    content: `
+        <h2>Illuminati - Símbolos e Influência</h2>
+        <p>A história real por trás do grupo...</p>
+    `
+},
+
+"calendario": {
+    title: "Calendário de Planos",
+    password: "calendario27",
+    content: `
+        <h2>Calendário de Eventos 2026-2030</h2>
+        <ul>
+            <li>2026 - Evento A</li>
+            <li>2027 - Evento B</li>
+        </ul>
+    `
+},
+
+"controle": {
+    title: "Controle Populacional",
+    password: "controle2026",
+    content: `
+        <h2>Estratégias de Controle Populacional</h2>
+        <p>Informações restritas...</p>
+    `
+},
+
+"financas": {
+    title: "Sistema Financeiro Global",
+    password: "banco2025",
+    content: `
+        <h2>Quem realmente controla o dinheiro mundial</h2>
+        <p>Bancos centrais, famílias e poder...</p>
+    `
+}
 };
 
 let currentTopicKey = null;
