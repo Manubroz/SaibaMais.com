@@ -78,9 +78,36 @@ def menu():
             for k, v in topics.items():
                 print(f"• {k} → {v['title']}")
                 
-        elif op == "3":
+                       elif op == "3":
             import random
             import string
-            senha = ''.join(random.choices(string.ascii_letters + string.digits + "!@#$%", k=12))
+            senha = ''.join(random.choices(string.ascii_letters + string.digits + "!@#$%_&", k=14))
             print(Fore.GREEN + f"Senha forte gerada: {senha}" + Style.RESET_ALL)
             
+        elif op == "4":
+            export_to_js(topics)
+        elif op == "0":
+            print(Fore.CYAN + "Até mais! 👋" + Style.RESET_ALL)
+            break
+        else:
+            print(Fore.RED + "Opção inválida!" + Style.RESET_ALL)
+
+def export_to_js(topics):
+    js_content = "// ==================== DADOS DOS TÓPICOS SECRETOS ====================\n"
+    js_content += "const secretTopics = {\n"
+    
+    for key, data in topics.items():
+        js_content += f'    "{key}": {{\n'
+        js_content += f'        title: "{data["title"]}",\n'
+        js_content += f'        password: "{data["password"]}",\n'
+        js_content += f'        content: `{data["content"]}`\n'
+        js_content += "    },\n"
+    
+    js_content += "};\n"
+    
+    with open("script_export.js", "w", encoding="utf-8") as f:
+        f.write(js_content)
+    print(Fore.GREEN + "✅ Exportado com sucesso para script_export.js!" + Style.RESET_ALL)
+
+if __name__ == "__main__":
+    menu()
