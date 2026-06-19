@@ -1,33 +1,31 @@
 // ==================== CONFIGURAÇÕES GLOBAIS ====================
-const MASTER_PASSWORD = "mestre2026";   // ← MUDE PARA UMA SENHA FORTE QUE SÓ VOCÊ SAIBA!
+const MASTER_PASSWORD = "mestre2026";   // ← MUDE PARA UMA SENHA FORTE!
 
 const secretTopics = {
     "alta cupula": {
         title: "Alta Cúpula",
         password: "senha123",
-        content: `<h2>Alta Cúpula</h2><p>Conteúdo secreto aqui...</p>`
+        content: `<h2>Alta Cúpula</h2><p>Conteúdo secreto sobre a alta cúpula aqui...</p>`
     },
     "planos": {
         title: "Planos da Elite",
         password: "planos2026",
-        content: `<h2>Planos da Elite</h2><p>Informações aqui...</p>`
+        content: `<h2>Planos da Elite</h2><p>Informações sobre os planos...</p>`
     },
     "elite": {
         title: "A Elite Global",
         password: "elite2026",
-        content: `<h2>A Elite Global</h2><p>Informações sobre as famílias...</p>`
+        content: `<h2>A Elite Global</h2><p>Informações sobre as famílias e organizações...</p>`
     },
     "agenda2030": {
         title: "Agenda 2030",
         password: "agenda2030",
-        content: `<h2>Agenda 2030</h2><p>Detalhes do plano...</p>`
+        content: `<h2>Agenda 2030</h2><p>Detalhes sobre os objetivos ocultos...</p>`
     }
-    // Adicione mais tópicos aqui
 };
 
 // ==================== VARIÁVEIS GLOBAIS ====================
 let unlockedTopics = JSON.parse(localStorage.getItem('unlockedTopics')) || {};
-let currentTopicKey = null;
 
 // ==================== BUSCA ====================
 function searchTopics() {
@@ -51,25 +49,34 @@ function searchTopics() {
         if (key.includes(query)) {
             found = true;
             const topic = secretTopics[key];
-            const isUnlocked = unlockedTopics[key];
+            const isUnlocked = unlockedTopics[key] === true;
 
             resultsContainer.innerHTML += `
-                <div class="card" onclick="openPasswordModal('${key}')">
+                <div class="card" onclick="handleCardClick('${key}')">
                     <h3>${topic.title}</h3>
-                    <p>${isUnlocked ? '✅ Desbloqueado' : '🔒 Conteúdo restrito'}</p>
+                    <p>${isUnlocked ? '✅ Desbloqueado - Clique para abrir' : '🔒 Clique para acessar'}</p>
                 </div>
             `;
         }
     });
 
     if (!found) {
-        resultsContainer.innerHTML = `<p class="no-results">Nenhum tópico encontrado.</p>`;
+        resultsContainer.innerHTML = `<p class="no-results">Nenhum tópico encontrado para "${query}".</p>`;
     }
 }
 
-// ==================== MODAL E SENHA ====================
+// ==================== NOVO: VERIFICAÇÃO ANTES DO MODAL ====================
+function handleCardClick(key) {
+    if (unlockedTopics[key] === true) {
+        showContent(key);           // Abre direto se já estiver desbloqueado
+    } else {
+        openPasswordModal(key);     // Pede senha se ainda estiver bloqueado
+    }
+}
+
+// ==================== MODAL ====================
 function openPasswordModal(key) {
-    currentTopicKey = key;
+    currentTopicKey = key;  // Variável global
     const topic = secretTopics[key];
 
     document.getElementById('modalTitle').textContent = topic.title;
@@ -81,20 +88,20 @@ function openPasswordModal(key) {
     document.getElementById('passwordInput').focus();
 }
 
+let currentTopicKey = null;
+
 function checkPassword() {
     const password = document.getElementById('passwordInput').value.trim();
     const errorMsg = document.getElementById('errorMsg');
 
-    // === CHAVE MESTRE ===
     if (password === MASTER_PASSWORD) {
         unlockAllTopics();
         closeModal();
-        alert("🔑 CHAVE MESTRE ATIVADA!\nTodos os tópicos foram desbloqueados.");
-        searchTopics(); // Atualiza visual
+        alert("🔑 CHAVE MESTRE ATIVADA!\nTodos os tópicos desbloqueados.");
+        searchTopics();
         return;
     }
 
-    // === Senha normal ===
     const topic = secretTopics[currentTopicKey];
     if (password === topic.password) {
         unlockTopic(currentTopicKey);
@@ -130,9 +137,15 @@ function showContent(key) {
     const topic = secretTopics[key];
     const newWin = window.open('', '_blank');
     newWin.document.write(`
-        <!DOCTYPE html><html><head><meta charset="UTF-8"><title>${topic.title}</title>
-        <style>body{font-family:Arial;padding:40px;background:#1a1a2e;color:#e0e0ff;}</style>
-        </head><body>${topic.content}</body></html>
+        <!DOCTYPE html>
+        <html lang="pt-BR">
+        <head><meta charset="UTF-8"><title>${topic.title}</title>
+        <style>
+            body {font-family: Arial, sans-serif; padding: 40px; background: #1a1a2e; color: #e0e0ff; line-height: 1.6;}
+            h2 {color: #00d4ff;}
+        </style>
+        </head>
+        <body>${topic.content}</body></html>
     `);
 }
 
@@ -141,7 +154,10 @@ function closeModal() {
 }
 
 // Eventos
-document.addEventListener('keydown', e => { if (e.key === "Escape") closeModal(); });
+document.addEventListener('keydown', e => {
+    if (e.key === "Escape") closeModal();
+});
+
 document.getElementById('passwordInput').addEventListener('keypress', e => {
     if (e.key === "Enter") checkPassword();
 });

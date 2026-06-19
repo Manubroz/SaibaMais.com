@@ -17,7 +17,7 @@ def generate_key():
         key = Fernet.generate_key()
         with open(KEY_FILE, "wb") as f:
             f.write(key)
-        print(Fore.GREEN + "✅ Nova chave de criptografia gerada com sucesso!" + Style.RESET_ALL)
+        print(Fore.GREEN + "✅ Nova chave de criptografia gerada!" + Style.RESET_ALL)
     else:
         print(Fore.YELLOW + "🔑 Chave já existe." + Style.RESET_ALL)
 
@@ -47,7 +47,8 @@ def save_topics(topics):
 
 # ==================== EXPORTAR PARA JS ====================
 def export_to_js(topics):
-    js_content = "// ==================== DADOS DOS TÓPICOS SECRETOS ====================\n"
+    js_content = "// ==================== CONFIGURAÇÕES GLOBAIS ====================\n"
+    js_content += 'const MASTER_PASSWORD = "mestre2026";\n\n'
     js_content += "const secretTopics = {\n"
     
     for key, data in topics.items():
@@ -62,9 +63,9 @@ def export_to_js(topics):
     with open("script_export.js", "w", encoding="utf-8") as f:
         f.write(js_content)
     print(Fore.GREEN + "✅ Exportado com sucesso para script_export.js!" + Style.RESET_ALL)
-    print(Fore.CYAN + "   Copie o conteúdo desse arquivo para o seu script.js" + Style.RESET_ALL)
+    print(Fore.CYAN + "   Copie o conteúdo para o seu script.js" + Style.RESET_ALL)
 
-# ==================== MENU PRINCIPAL ====================
+# ==================== MENU ====================
 def menu():
     topics = load_topics()
     
@@ -78,12 +79,12 @@ def menu():
         print("4. Exportar para script.js")
         print("0. Sair")
         
-        op = input("\nEscolha uma opção: ").strip()
+        op = input("\nEscolha: ").strip()
 
         if op == "1":
-            titulo = input(Fore.YELLOW + "Título do tópico: " + Style.RESET_ALL)
-            chave = input(Fore.YELLOW + "Senha de acesso: " + Style.RESET_ALL)
-            print(Fore.YELLOW + "Conteúdo (pode usar HTML - digite e pressione Enter duas vezes para finalizar):" + Style.RESET_ALL)
+            titulo = input(Fore.YELLOW + "Título: " + Style.RESET_ALL)
+            chave = input(Fore.YELLOW + "Senha: " + Style.RESET_ALL)
+            print(Fore.YELLOW + "Conteúdo (HTML permitido - Enter vazio para finalizar):" + Style.RESET_ALL)
             lines = []
             while True:
                 line = input()
@@ -94,34 +95,28 @@ def menu():
             
             key_name = titulo.lower().replace(" ", "").replace("ç", "c").replace("ã", "a").replace("é", "e")
             
-            topics[key_name] = {
-                "title": titulo,
-                "password": chave,
-                "content": conteudo
-            }
+            topics[key_name] = {"title": titulo, "password": chave, "content": conteudo}
             save_topics(topics)
 
         elif op == "2":
             if not topics:
-                print(Fore.RED + "Nenhum tópico cadastrado ainda." + Style.RESET_ALL)
+                print(Fore.RED + "Nenhum tópico ainda." + Style.RESET_ALL)
             else:
-                print(Fore.YELLOW + "\nTópicos cadastrados:" + Style.RESET_ALL)
                 for k, v in topics.items():
                     print(f"• {k} → {v['title']}")
 
         elif op == "3":
-            senha = ''.join(random.choices(string.ascii_letters + string.digits + "!@#$%&*_", k=16))
-            print(Fore.GREEN + f"🔑 Senha forte gerada: {senha}" + Style.RESET_ALL)
+            senha = ''.join(random.choices(string.ascii_letters + string.digits + "!@#$%&*", k=16))
+            print(Fore.GREEN + f"Senha forte: {senha}" + Style.RESET_ALL)
 
         elif op == "4":
             export_to_js(topics)
 
         elif op == "0":
-            print(Fore.CYAN + "👋 Até mais! Mantenha o segredo." + Style.RESET_ALL)
+            print(Fore.CYAN + "Até mais!" + Style.RESET_ALL)
             break
         else:
-            print(Fore.RED + "Opção inválida! Tente novamente." + Style.RESET_ALL)
+            print(Fore.RED + "Opção inválida!" + Style.RESET_ALL)
 
 if __name__ == "__main__":
     menu()
-    
